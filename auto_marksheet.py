@@ -1,62 +1,28 @@
 """
-Auto-Marksheet-Generator
+Auto-Marksheet-Generator (Mock Data Version)
 An automated Python pipeline that scrapes academic result portals 
 and generates downloadable PDF marksheets instantly.
 """
 
 import requests
-from bs4 import BeautifulSoup
 import pdfkit
-import sys
-
-# ==========================================
-# CONFIGURATION - SANITIZED FOR PUBLIC REPO
-# ==========================================
-LOGIN_URL = "https://erp.iitkgp.ac.in/IIT_ERP3/" # Replace with actual auth URL
-RESULTS_URL = "https://erp.iitkgp.ac.in/StudentPerformance/" # Replace with actual data URL
-
-# Judges/Users will input their own credentials here
-USERNAME = "YOUR_ROLL_NUMBER_HERE"
-PASSWORD = "YOUR_PASSWORD_HERE"
-# ==========================================
-
-
-def login_to_portal(session, username, password):
-    """Authenticates the session with the academic portal."""
-    print("[*] Attempting to log in...")
-    
-    login_payload = {
-        'user_id': username,
-        'password': password,
-        # Add any other hidden form fields (like CSRF tokens) your specific Colab script uses
-    }
-    
-    response = session.post(LOGIN_URL, data=login_payload)
-    
-    if response.status_code == 200 and "Dashboard" in response.text:
-        print("[+] Login successful.")
-        return True
-    else:
-        print("[-] Login failed. Check credentials or CAPTCHA requirements.")
-        return False
-
 
 def fetch_and_parse_results(session):
-    """Scrapes the HTML marksheet data from the portal."""
-    print("[*] Fetching academic results...")
+    """Simulates the HTML data since the live portal is currently closed."""
+    print("[*] Academic portal is currently offline.")
+    print("[*] Bypassing network request. Injecting mock HTML data for demonstration...")
     
-    response = session.get(RESULTS_URL)
-    soup = BeautifulSoup(response.text, 'lxml')
-    
-    # Isolate the table or div containing the actual grades
-    # Update the target ID/Class based on your exact Colab DOM inspection
-    marksheet_html = soup.find('div', {'id': 'marksheet-container'})
-    
-    if not marksheet_html:
-        print("[-] Could not locate marksheet data on the page.")
-        sys.exit(1)
-        
-    return str(marksheet_html)
+    mock_html_data = """
+    <div id="marksheet-container">
+        <table border="1">
+            <tr><th>Subject ID</th><th>Subject Name</th><th>Grade</th></tr>
+            <tr><td>CS10001</td><td>Programming and Data Structures</td><td>A</td></tr>
+            <tr><td>PH11001</td><td>Physics</td><td>A</td></tr>
+            <tr><td>ME10001</td><td>Mechanics</td><td>EX</td></tr>
+        </table>
+    </div>
+    """
+    return mock_html_data
 
 
 def generate_pdf(html_content, output_filename="Marksheet.pdf"):
@@ -88,16 +54,17 @@ def generate_pdf(html_content, output_filename="Marksheet.pdf"):
 
 
 def main():
-    # Start a persistent requests session to handle cookies automatically
+    # Start a persistent requests session
     with requests.Session() as session:
-        # Step 1: Log in
-        if login_to_portal(session, USERNAME, PASSWORD):
-            
-            # Step 2: Scrape the data
-            raw_html = fetch_and_parse_results(session)
-            
-            # Step 3: Export to PDF
-            generate_pdf(raw_html)
+        # Step 1: Simulate Login
+        print("[+] Mock login successful.")
+        
+        # Step 2: Load the mock data instead of scraping
+        raw_html = fetch_and_parse_results(session)
+        
+        # Step 3: Export to PDF
+        generate_pdf(raw_html)
+
 
 if __name__ == "__main__":
     main()
