@@ -28,8 +28,7 @@ def fetch_and_parse_results(session):
 def generate_pdf(html_content, output_filename="Marksheet.pdf"):
     """Converts the scraped HTML data into a cleanly formatted PDF."""
     print(f"[*] Generating {output_filename}...")
-    
-    # Wrap the extracted table in basic HTML boilerplate for clean PDF rendering
+
     full_html = f"""
     <html>
     <head><style>
@@ -44,10 +43,12 @@ def generate_pdf(html_content, output_filename="Marksheet.pdf"):
     </body>
     </html>
     """
-    
+
     try:
-        # Note: wkhtmltopdf must be installed on the system for pdfkit to work
-        pdfkit.from_string(full_html, output_filename)
+        # Point pdfkit directly to the Windows default installation path
+        path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+        config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+        pdfkit.from_string(full_html, output_filename, configuration=config)
         print(f"[+] Success! PDF saved as {output_filename}")
     except Exception as e:
         print(f"[-] Error generating PDF: {e}")
